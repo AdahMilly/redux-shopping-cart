@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Cart from "./components/Cart/Cart";
 import Filter from "./components/Filter/Filter";
 import Products from "./components/Products/Products";
 
@@ -9,9 +10,24 @@ class App extends Component {
     super()
     this.state = {
       products:data.products,
+      cartItems:[],
       size:"",
       sort:""
     }
+  }
+  addToCart = (product) => {
+    const cartItems = this.state.cartItems.slice()
+    let alreadyInCart = false;
+    cartItems.forEach(item => {
+      if(item._id === product._id){
+        item.count++;
+        alreadyInCart = true
+      }
+    })
+    if(!alreadyInCart){
+      cartItems.push({...product, count:1})
+    }
+    this.setState({cartItems})
   }
   sortProducts = (event) => {
     const sort = event.target.value;
@@ -61,10 +77,10 @@ class App extends Component {
               filterProducts={this.filterProducts}
               sortProducts={this.sortProducts}
               />
-              <Products products={this.state.products}/>
+              <Products products={this.state.products} addToCart={this.addToCart}/>
             </div>
             <div className="sidebar">
-              Cart items
+              <Cart cartItems={this.state.cartItems}/>
             </div>
           </div>
         </main>
