@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import formatCurrency from '../util'
+import formatCurrency from '../../util'
+import "./Products.css"
 
 export default class Products extends Component {
     render() {
