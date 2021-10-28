@@ -6,28 +6,34 @@ import Products from "./components/Products/Products";
 import data from "./data.json";
 
 class App extends Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {
-      products:data.products,
-      cartItems:[],
-      size:"",
-      sort:""
+      products: data.products,
+      cartItems: [],
+      size: "",
+      sort: ""
     }
   }
+  removeFromCart = (product) => {
+    const cartItems = this.state.cartItems.slice();
+    this.setState({
+      cartItems: cartItems.filter((x) => x._id !== product._id),
+    });
+  };
   addToCart = (product) => {
     const cartItems = this.state.cartItems.slice()
     let alreadyInCart = false;
     cartItems.forEach(item => {
-      if(item._id === product._id){
+      if (item._id === product._id) {
         item.count++;
         alreadyInCart = true
       }
     })
-    if(!alreadyInCart){
-      cartItems.push({...product, count:1})
+    if (!alreadyInCart) {
+      cartItems.push({ ...product, count: 1 })
     }
-    this.setState({cartItems})
+    this.setState({ cartItems })
   }
   sortProducts = (event) => {
     const sort = event.target.value;
@@ -42,23 +48,23 @@ class App extends Component {
               ? 1
               : -1
             : sort === "highest"
-            ? a.price < b.price
-              ? 1
-              : -1
-            : a._id < b._id
-            ? 1
-            : -1
+              ? a.price < b.price
+                ? 1
+                : -1
+              : a._id < b._id
+                ? 1
+                : -1
         ),
     }));
   };
   filterProducts = (event) => {
     console.log(event.target.value);
-    if(event.target.value === ""){
-      this.setState({size:event.target.value, product:data.products})
-    }else {
+    if (event.target.value === "") {
+      this.setState({ size: event.target.value, product: data.products })
+    } else {
       this.setState({
-        size:event.target.value,
-        products:data.products.filter(product => product.availableSizes.indexOf(event.target.value)>=0)
+        size: event.target.value,
+        products: data.products.filter(product => product.availableSizes.indexOf(event.target.value) >= 0)
       })
     }
   }
@@ -72,15 +78,15 @@ class App extends Component {
           <div className="content">
             <div className="main">
               <Filter count={this.state.products.length}
-              size={this.state.size}
-              sort={this.state.sort}
-              filterProducts={this.filterProducts}
-              sortProducts={this.sortProducts}
+                size={this.state.size}
+                sort={this.state.sort}
+                filterProducts={this.filterProducts}
+                sortProducts={this.sortProducts}
               />
-              <Products products={this.state.products} addToCart={this.addToCart}/>
+              <Products products={this.state.products} addToCart={this.addToCart} />
             </div>
             <div className="sidebar">
-              <Cart cartItems={this.state.cartItems}/>
+              <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
             </div>
           </div>
         </main>
